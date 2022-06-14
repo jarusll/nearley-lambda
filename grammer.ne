@@ -1,10 +1,10 @@
 programs
-    -> statements {% id %}
+    -> statements {% data => ({type: "statements", statements: data[0]})%}
 
 statements 
-    -> statement {% data => data[0] %}
-    | statement "\n" statements {% data => [data[0], data[2]] %}
-    | "\n" statements {% data => data[1] %}
+    -> statement {% data => [data[0]] %}
+    | statement "\n" statements {% data => [data[0], ...data[2]] %}
+    | "\n" statements {% data => [data[1]] %}
     | _ {% data => [] %}
 
 statement
@@ -74,6 +74,7 @@ operator
 application
     -> function _ "." _ argument {% (data) => ({type: "application", function: data[0], argument: data[4]}) %}
     | function _ "." _ arguments {% (data) => ({type: "application", function: data[0], arguments: data[4]}) %}
+    | variable _ "." _ argument {% (data) => ({type: "application", function: {type: "variable", name: data[0][0]}, argument: data[4]}) %}
 
 arguments
     -> argument _ "." _ arguments {% (data) => [data[0], data[4]]%}
@@ -97,8 +98,8 @@ number
     | digits {% data => Number(data[0]) %}
     
 digits 
-    -> digit {% data => Number(data[0]) %}
-    | digit digits {% data => Number(data.join("")) %}
+    -> digit {% id %}
+    | digit digits {% data => data.join("") %}
     
 digit 
     ->  [0-9] {% id %}
