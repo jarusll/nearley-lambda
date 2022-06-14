@@ -5,13 +5,17 @@ function id(x) { return x[0]; }
 var grammar = {
     Lexer: undefined,
     ParserRules: [
-    {"name": "program", "symbols": ["expr"], "postprocess": id},
+    {"name": "programs", "symbols": ["statement"], "postprocess": id},
+    {"name": "statement", "symbols": ["expr"], "postprocess": id},
+    {"name": "statement", "symbols": ["assignment"], "postprocess": id},
+    {"name": "assignment$string$1", "symbols": [{"literal":"l"}, {"literal":"e"}, {"literal":"t"}], "postprocess": function joiner(d) {return d.join('');}},
+    {"name": "assignment", "symbols": ["assignment$string$1", "_", "variable", "_", {"literal":"="}, "_", "expr"], "postprocess": data => ({type: "assignment", variable: data[2][0], value: data[6]})},
     {"name": "expr", "symbols": ["literal"], "postprocess": id},
-    {"name": "expr", "symbols": ["variable_expression"], "postprocess": id},
     {"name": "expr", "symbols": ["multiplicative"], "postprocess": id},
     {"name": "expr", "symbols": ["additive"], "postprocess": id},
     {"name": "expr", "symbols": ["function"], "postprocess": id},
     {"name": "expr", "symbols": ["application"], "postprocess": id},
+    {"name": "expr", "symbols": ["variable_expression"], "postprocess": id},
     {"name": "additive", "symbols": ["multiplicative", "_", /[+-]/, "_", "additive"], "postprocess": 
         (data) => {
             switch(data[2]){
@@ -34,16 +38,17 @@ var grammar = {
         }
         },
     {"name": "multiplicative", "symbols": ["unary_expression"], "postprocess": id},
-    {"name": "unary_expression", "symbols": ["number"], "postprocess": (data) => ({type: "literal", value: data[0]})},
+    {"name": "unary_expression", "symbols": ["application"], "postprocess": id},
+    {"name": "unary_expression", "symbols": ["number"], "postprocess": (data) => ({type: "number", value: data[0]})},
     {"name": "unary_expression", "symbols": [{"literal":"("}, "_", "additive", "_", {"literal":")"}], "postprocess": data => data[2]},
     {"name": "function$string$1", "symbols": [{"literal":"l"}, {"literal":"a"}, {"literal":"m"}, {"literal":"b"}, {"literal":"d"}, {"literal":"a"}], "postprocess": function joiner(d) {return d.join('');}},
     {"name": "function", "symbols": ["function$string$1", "_", "variable", "_", {"literal":"."}, "_", "variable_expression"], "postprocess": data => ({type: "abstraction", arg: data[2][0], return: data[6] })},
     {"name": "function$string$2", "symbols": [{"literal":"l"}, {"literal":"a"}, {"literal":"m"}, {"literal":"b"}, {"literal":"d"}, {"literal":"a"}], "postprocess": function joiner(d) {return d.join('');}},
     {"name": "function", "symbols": ["function$string$2", "_", "variable", "_", {"literal":"."}, "_", "function"], "postprocess": data => ({type: "abstraction", arg: data[2][0], return: data[6] })},
+    {"name": "variable_expression", "symbols": ["additive"], "postprocess": id},
     {"name": "variable_expression", "symbols": ["variable", "_", "operator", "_", "variable_expression"], "postprocess": (data) => ({type: "variable_expression", op: data[2], left: {type: "variable", name: data[0][0]}, right: data[4]})},
     {"name": "variable_expression", "symbols": ["number", "_", "operator", "_", "variable_expression"], "postprocess": (data) => ({type: "variable_expression", op: data[2], left: data[0][0], right: data[4]})},
-    {"name": "variable_expression", "symbols": ["variable"], "postprocess": data => ({type: "variable", name: data[0]})},
-    {"name": "variable_expression", "symbols": ["number"], "postprocess": data => ({type: "number", value: data[0]})},
+    {"name": "variable_expression", "symbols": ["variable"], "postprocess": data => ({type: "variable", name: data[0][0]})},
     {"name": "operator", "symbols": [{"literal":"+"}], "postprocess": id},
     {"name": "operator", "symbols": [{"literal":"-"}], "postprocess": id},
     {"name": "operator", "symbols": [{"literal":"*"}], "postprocess": id},
@@ -77,7 +82,7 @@ var grammar = {
     {"name": "variable$ebnf$1", "symbols": ["variable$ebnf$1", /[A-Z]/], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "variable", "symbols": ["variable$ebnf$1"], "postprocess": id}
 ]
-  , ParserStart: "program"
+  , ParserStart: "programs"
 }
 if (typeof module !== 'undefined'&& typeof module.exports !== 'undefined') {
    module.exports = grammar;

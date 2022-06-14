@@ -3,17 +3,44 @@ const grammer = require('./grammer.js')
 
 const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammer))
 
+function BinOp(operation, leftVal, rightVal){
+    switch(operation){
+        case "+":
+            return leftVal + rightVal
+        case "-":
+            return leftVal - rightVal
+        case "*":
+            return leftVal * rightVal
+        case "/":
+            return Math.floor(leftVal / rightVal)
+        default:
+            return new Error(`Unknown operation: ${operation}`)
+    }
+}
+
 function evaluate(ast){
+    let env = {}
     switch(ast.type){
+        case "assignment":
+            const variable = ast.variable
+            const value = evaluate(ast.value)
+            env[variable] = value
+            console.log(env)
+            return value
+        case "operation":
+            const leftVal = evaluate(ast.left)
+            const rightVal = evaluate(ast.right)
+            const operation = ast.operator
+            return BinOp(operation, leftVal, rightVal)
         case "application":
             const fn = evaluate(ast.function)
             if (ast.argument){
                 const argument = evaluate(ast.argument)
-                return argument
+                return fn(argument)
             }
             if (ast.arguments){
-                const arguments = ast.arguments.map(x => evaluate(x))
-                return arguments.slice(1).reduce((acc, curr) => acc(curr), fn(arguments[0]))
+                const args = ast.arguments.map(x => evaluate(x))
+                return args.slice(1).reduce((acc, curr) => acc(curr), fn(args[0]))
             }
             return fn
         case "argument":
@@ -43,8 +70,8 @@ function evaluate(ast){
 }
 
 try {
-    parser.feed(`lambda X . lambda Y . X * Y + 1 . 7 . 8`)
-    console.log(parser.results[0])
+    parser.feed(`let X = lambda Y . Y * Y`)
+    console.log(JSON.stringify(parser.results[0], null, 4))
     console.log(evaluate(parser.results[0]))
 } catch (e) {
     console.log(e.message, e)

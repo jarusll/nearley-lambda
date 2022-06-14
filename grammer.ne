@@ -1,13 +1,20 @@
-program
+programs 
+    -> statement {% id %}
+
+statement
     -> expr {% id %}
+    | assignment {% id %}
     
+assignment  
+    -> "let" _ variable _ "=" _ expr {% data => ({type: "assignment", variable: data[2][0], value: data[6]}) %}
+
 expr 
     -> literal {% id %}
-    | variable_expression {% id %}
     | multiplicative {% id %}
     | additive {% id %}
     | function {% id %}
     | application {% id %}
+    | variable_expression {% id %}
     
 additive  
     -> multiplicative _ [+-] _ additive 
@@ -38,7 +45,8 @@ multiplicative
     | unary_expression {% id %}
     
 unary_expression
-    -> number {% (data) => ({type: "literal", value: data[0]}) %}
+    -> application {% id %}
+    | number {% (data) => ({type: "number", value: data[0]}) %}
     | "(" _ additive _ ")" {% data => data[2] %}
 
 function 
@@ -46,10 +54,10 @@ function
     | "lambda" _ variable _ "." _ function {% data => ({type: "abstraction", arg: data[2][0], return: data[6] }) %} 
 
 variable_expression
-    -> variable _ operator _ variable_expression {% (data) => ({type: "variable_expression", op: data[2], left: {type: "variable", name: data[0][0]}, right: data[4]}) %}
+    -> additive {% id %}
+    | variable _ operator _ variable_expression {% (data) => ({type: "variable_expression", op: data[2], left: {type: "variable", name: data[0][0]}, right: data[4]}) %}
     | number _ operator _ variable_expression {% (data) => ({type: "variable_expression", op: data[2], left: data[0][0], right: data[4]}) %}
-    | variable {% data => ({type: "variable", name: data[0]}) %}
-    | number {% data => ({type: "number", value: data[0]}) %}
+    | variable {% data => ({type: "variable", name: data[0][0]}) %}
 
 operator
     -> "+" {% id %}
