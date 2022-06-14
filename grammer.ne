@@ -1,5 +1,11 @@
-programs 
-    -> statement {% id %}
+programs
+    -> statements {% id %}
+
+statements 
+    -> statement {% data => data[0] %}
+    | statement "\n" statements {% data => [data[0], data[2]] %}
+    | "\n" statements {% data => data[1] %}
+    | _ {% data => [] %}
 
 statement
     -> expr {% id %}
@@ -97,7 +103,7 @@ digits
 digit 
     ->  [0-9] {% id %}
 
-_ -> [ \t]
+_ -> [ \t]:?
 
 string -> "\"" characters "\"" {% data => data[1] %}
 

@@ -70,7 +70,8 @@ function evaluate(ast){
 }
 
 try {
-    parser.feed(`let X = lambda Y . Y * Y`)
+    parser.feed(`let Y = lambda X . X + 2
+1 + 2`)
     console.log(JSON.stringify(parser.results[0], null, 4))
     console.log(evaluate(parser.results[0]))
 } catch (e) {
@@ -78,3 +79,4 @@ try {
 }
 
 // {% data => new Function(`${data[2]}`, `return ${data[6]}`) %}
+
