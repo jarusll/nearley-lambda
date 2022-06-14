@@ -8,12 +8,12 @@ statements
     | _ {% data => [] %}
 
 statement
-    -> expr {% id %}
-    | assignment {% id %}
-    
-assignment  
-    -> "let" _ variable _ "=" _ expr {% data => ({type: "assignment", variable: data[2][0], value: data[6]}) %}
+    -> assignment {% id %}
+    | expr {% id %}
 
+assignment  
+    -> "let" _ variable _ "=" _ expr {% data => ({type: "assignment", variable: data[2], value: data[6]}) %}
+    
 expr 
     -> literal {% id %}
     | array {% id %}
@@ -84,7 +84,7 @@ operator
 application
     -> function _ "." _ argument {% (data) => ({type: "application", function: data[0], argument: data[4]}) %}
     | function _ "." _ arguments {% (data) => ({type: "application", function: data[0], arguments: data[4]}) %}
-    | variable _ "." _ argument {% (data) => ({type: "application", function: {type: "variable", name: data[0][0]}, argument: data[4]}) %}
+    | variable _ "." _ argument {% (data) => ({type: "application", function: {type: "variable", name: data[0]}, argument: data[4]}) %}
 
 arguments
     -> argument _ "." _ arguments {% (data) => [data[0], data[4]]%}
@@ -94,6 +94,13 @@ arguments
 argument
     -> literal {% id %}
 
+literal
+    -> boolean {% data => ({type: "boolean", value: data[0]}) %}
+    | number {% data => ({type: "number", value: data[0]}) %}
+    | string {% data => ({type: "string", value: data[0][0]}) %}
+    | myNull {% data => ({type: "null", value: data[0]}) %}
+    | array {% id %}
+
 array 
     -> "[" _ array_elements _ "]" {% data => ({type: "array", elements: data[2]}) %}
     | "[" "]" {% data => ({type: "array", elements: []}) %}
@@ -102,27 +109,22 @@ array_elements
     -> literal _ "," _ array_elements {% (data) => [data[0], ...data[4]] %}
     | literal {% data => [data[0]] %}
 
-literal
-    -> boolean {% data => ({type: "boolean", value: data[0]}) %}
-    | number {% data => ({type: "number", value: data[0]}) %}
-    | string {% data => ({type: "string", value: data[0][0]}) %}
-    | myNull {% data => ({type: "null", value: data[0]}) %}
-    
 boolean 
     -> "true" {% () => true %}
     | "false" {% () => false %}
 
 myNull
     -> "null" {% () => null %}
-    
+
 number 
     -> digits "." digits {% data => Number(data[0] + "." + data[2]) %}
     | digits {% data => Number(data[0]) %}
-    
+    | "-" digits {% data => -Number(data[1]) %}
+
 digits 
     -> digit {% id %}
     | digit digits {% data => data.join("") %}
-    
+
 digit 
     ->  [0-9] {% id %}
 
@@ -133,9 +135,9 @@ string -> "\"" characters "\"" {% data => data[1] %}
 characters
     -> character {% id %}
     | character characters {% data => data[0] + data[1] %}
-    
+
 character
-    -> [^\"]:+ {% id %}
+    -> [^\"A-Z]:+ {% id %}
 
 variable
-    -> [A-Z]:+ {% id %}
+    -> [A-Z]:+ {% data => data.join().replace(/,/g, "") %}

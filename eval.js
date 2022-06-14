@@ -60,7 +60,7 @@ function evaluate(ast) {
 				return ast.name
 			if (env[ast.name])
 				return env[ast.name]
-			return "Cannot resolve ast.name"
+			return new Error(`Cannot resolve variable: ${ast.name}`)
 		case "variable_expression":
 			const block = copy(ast.block || [])
 			ast.left.block = block
