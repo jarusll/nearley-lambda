@@ -16,6 +16,7 @@ assignment
 
 expr 
     -> literal {% id %}
+    | array {% id %}
     | multiplicative {% id %}
     | additive {% id %}
     | function {% id %}
@@ -70,6 +71,15 @@ operator
     | "-" {% id %}
     | "*" {% id %}
     | "/" {% id %}
+    | "==" {% id %}
+    | "!=" {% id %}
+    | ">" {% id %}
+    | "<" {% id %}
+    | ">=" {% id %}
+    | "<=" {% id %}
+    | "&&" {% id %}
+    | "||" {% id %}
+    | "!" {% id %}
 
 application
     -> function _ "." _ argument {% (data) => ({type: "application", function: data[0], argument: data[4]}) %}
@@ -84,10 +94,18 @@ arguments
 argument
     -> literal {% id %}
 
+array 
+    -> "[" _ array_elements _ "]" {% data => ({type: "array", elements: data[2]}) %}
+    | "[" "]" {% data => ({type: "array", elements: []}) %}
+
+array_elements
+    -> literal _ "," _ array_elements {% (data) => [data[0], ...data[4]] %}
+    | literal {% data => [data[0]] %}
+
 literal
     -> boolean {% data => ({type: "boolean", value: data[0]}) %}
     | number {% data => ({type: "number", value: data[0]}) %}
-    | string {% data => ({type: "string", value: data[0]}) %}
+    | string {% data => ({type: "string", value: data[0][0]}) %}
     | myNull {% data => ({type: "null", value: data[0]}) %}
     
 boolean 
@@ -108,7 +126,7 @@ digits
 digit 
     ->  [0-9] {% id %}
 
-_ -> [ \t]:?
+_ -> [ \t]:*
 
 string -> "\"" characters "\"" {% data => data[1] %}
 

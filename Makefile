@@ -1,3 +1,5 @@
+all: gen compile 
+
 compile:
 	node main.js
 
