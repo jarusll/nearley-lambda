@@ -88,10 +88,14 @@ literal
     -> boolean {% data => ({type: "boolean", value: data[0]}) %}
     | number {% data => ({type: "number", value: data[0]}) %}
     | string {% data => ({type: "string", value: data[0]}) %}
+    | myNull {% data => ({type: "null", value: data[0]}) %}
     
 boolean 
     -> "true" {% () => true %}
     | "false" {% () => false %}
+
+myNull
+    -> "null" {% () => null %}
     
 number 
     -> digits "." digits {% data => Number(data[0] + "." + data[2]) %}

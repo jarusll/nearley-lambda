@@ -32,6 +32,8 @@ function evaluate(ast) {
 			const value = evaluate(ast.value)
 			env[variable] = value
 			return value
+		case "null":
+			return null
 		case "operation":
 			const leftVal = evaluate(ast.left)
 			const rightVal = evaluate(ast.right)
@@ -83,8 +85,7 @@ function evaluate(ast) {
 }
 
 try {
-	parser.feed(`let S = lambda X . X * X
-S . 100`)
+	parser.feed(`null`)
 	console.log(JSON.stringify(parser.results[0], null, 4))
 	console.log(evaluate(parser.results[0]))
 } catch (e) {
