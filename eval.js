@@ -55,6 +55,8 @@ function evaluate(ast) {
 			return ast.value
 		case "boolean":
 			return ast.value
+		case "array":
+			return ast.value
 		case "variable":
 			if (ast && ast.block && ast.block.includes(ast.name))
 				return ast.name
