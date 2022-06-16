@@ -98,8 +98,11 @@ literal
     -> boolean {% data => ({type: "boolean", value: data[0]}) %}
     | number {% data => ({type: "number", value: data[0]}) %}
     | string {% data => ({type: "string", value: data[0][0]}) %}
+    | atom {% id %}
     | myNull {% data => ({type: "null", value: data[0]}) %}
     | array {% id %}
+
+atom -> ":" characters {% data => data[0] + data[1].replace(",", "") %}
 
 array 
     -> "[" _ array_elements _ "]" {% data => ({type: "array", elements: data[2]}) %}
