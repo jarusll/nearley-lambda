@@ -5,8 +5,7 @@ const evaluate = require('./eval')
 const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar))
 
 try {
-	parser.feed(`let ARRAY = [:hello, "yolo", null, true, 68, 524.5693]
-ARRAY`)
+	parser.feed(`FIRST [1, 2, 3]`)
 	console.log(JSON.stringify(parser.results[0], null, 4))
 	console.log(evaluate(parser.results[0]))
 } catch (e) {

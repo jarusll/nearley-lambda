@@ -17,6 +17,15 @@ assignment
 expr 
     -> literal {% id %}
     | variable {% data => ({type: "variable", name: data[0]}) %}
+    | primitive {% id %}
+
+primitive
+    -> list_operation _ array {% data => ({type: "operation", operator: data[0], argument: data[2]}) %}
+
+list_operation
+    -> "FIRST"
+    | "REST"
+    | "CONS"
 
 literal
     -> boolean {% data => ({type: "boolean", value: data[0]}) %}
