@@ -1,16 +1,19 @@
+@include "./whitespace.ne"
+@include "./functions.ne"
+
 literal
-    -> boolean {% data => ({type: "boolean", value: data[0]}) %}
-    | number {% data => ({type: "number", value: data[0]}) %}
-    | string {% data => ({type: "string", value: data[0]}) %}
-    | atom {% data => ({type: "atom", value: data[0]}) %}
-    | myNull {% data => ({type: "null", value: data[0]}) %}
-    | array {% id %}
+    -> boolean {% data => makeLiteral("bool", data[0]) %}
+    | number {% data => makeLiteral("number", data[0]) %}
+    | string {% data => makeLiteral("string", data[0]) %}
+    | atom {% data => makeLiteral("atom", data[0]) %}
+    | myNull {% data => makeLiteral("null", data[0]) %}
+    | array {% data => makeLiteral("array", data[0]) %}
 
 atom -> ":" characters {% data => data[0] + data[1] %}
 
 array 
-    -> "[" _ array_elements _ "]" {% data => ({type: "array", value: data[2]}) %}
-    | "[" "]" {% data => ({type: "array", value: []}) %}
+    -> "[" _ array_elements _ "]" {% data => data[2] %}
+    | "[" "]" {% data => [] %}
 
 array_elements
     -> literal _ "," _ array_elements {% (data) => [data[0], ...data[4]] %}
@@ -35,8 +38,6 @@ digits
 digit 
     ->  [0-9] {% id %}
 
-_ -> [ \t]:*
-
 string -> "\"" characters "\"" {% data => data[1] %}
 
 characters
@@ -44,4 +45,4 @@ characters
     | character characters {% data => data[0] + data[1] %}
 
 character
-    -> [^\"] {% id %}
+    -> [a-zA-Z] {% id %}
