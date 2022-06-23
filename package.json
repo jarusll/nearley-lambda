@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "gen": "nearleyc grammar.ne -o grammar.js"
+    "run": "node main.js",
+    "gen": "nearleyc ./grammars/expr.ne -o grammar.js"
   },
   "keywords": [],
   "author": "",
