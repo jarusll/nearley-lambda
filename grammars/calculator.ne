@@ -43,6 +43,6 @@ multiplicative -> exponent _ multiplicative_op _ exponent
 	| exponent {% id %}
 multiplicative_op -> "*" {% id %}
 		  | "/" {% id %}
-exponent -> unary _ "^" _ unary
+exponent -> unary _ "**" _ unary
 	{% data => makeOperation(data[2], data[0], data[4]) %}
 	 | unary {% id %}
