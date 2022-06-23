@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "run": "node main.js",
-    "gen": "nearleyc ./grammars/expr.ne -o grammar.js"
+    "gen": "nearleyc ./grammars/program.ne -o grammar.js"
   },
   "keywords": [],
   "author": "",

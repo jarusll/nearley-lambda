@@ -39,4 +39,11 @@ function makeApplication(fn, arguments){
 	}
 }
 
+function makeStatements(statements){
+	return {
+		type: "statements",
+		statements
+	}
+}
+
 %}
