@@ -77,10 +77,33 @@ function evaluate(ast) {
 		case "abstraction":
 			const argument = ast.argument
 			ast.body.block = [argument]
-			const returnValue = 'return ' + evaluate(ast.body)
-			return Function(argument, returnValue)
+			// const returnValue = 'return ' + evaluate(ast.body)
+			return Function(argument, 'return ' + construct(ast.body))
 		default:
 			throw new Error(`Unknown AST type: ${ast.type}`)
+	}
+}
+
+function construct(ast){
+	switch(ast.type){
+		case "number":
+			return String(ast.value)
+		case "string":
+			return `"${ast.value}"`
+		case "boolean":
+			return String(ast.value)
+		case "variable":
+			return String(ast.name)
+		case "operation":
+			const leftOperand = construct(ast.left)
+			const rightOperand = construct(ast.right)
+			const operation = ast.operation
+			return `(${leftOperand} ${operation} ${rightOperand})`
+		case "abstraction":
+			const { argument, body } = ast
+			return Function(argument, 'return ' + construct(body)).toString()
+		default:
+			return `Unknown ast type: ${ast.type}`
 	}
 }
 
