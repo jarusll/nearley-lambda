@@ -12,6 +12,8 @@ function BinOp(operation, leftVal, rightVal) {
 			return leftVal * rightVal
 		case "/":
 			return Math.floor(leftVal / rightVal)
+		case "^":
+			return Math.pow(leftVal, rightVal)
 		default:
 			return new Error(`Unknown operation: ${operation}`)
 	}
@@ -30,8 +32,6 @@ function evaluate(ast) {
 		case "null":
 			return null
 		case "operation":
-			ast.left.block = ast.block
-			ast.right.block = ast.block
 			const leftVal = evaluate(ast.left)
 			const rightVal = evaluate(ast.right)
 			const operation = ast.operation
@@ -43,10 +43,6 @@ function evaluate(ast) {
 				return args.slice(1).reduce((acc, curr) => acc(curr), fn(args[0]))
 			}
 			return fn
-		case "argument":
-			return ast.value
-		case "arguments":
-			return ast.map(x => evaluate(x))
 		case "number":
 			return ast.value
 		case "string":
@@ -56,23 +52,11 @@ function evaluate(ast) {
 		case "array":
 			return ast.value
 		case "variable":
-			return ast.name
-			if (ast && ast.block && ast.block.includes(ast.name))
-				return ast.name
 			if (env[ast.name])
 				return env[ast.name]
 			return new Error(`Cannot resolve variable: ${ast.name}`)
-		case "variable_expression":
-			const block = copy(ast.block || [])
-			ast.left.block = block
-			ast.right.block = block
-			const left = evaluate(ast.left)
-			const right = evaluate(ast.right)
-			const op = ast.operation
-			return left.toString() + op + right.toString()
 		case "abstraction":
 			const argument = ast.argument
-			ast.body.block = [argument]
 			// const returnValue = 'return ' + evaluate(ast.body)
 			return Function(argument, 'return ' + construct(ast.body))
 		default:
