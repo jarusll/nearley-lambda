@@ -5,7 +5,7 @@
 @include "./calculator.ne"
 
 expr -> literal {% id %}
-     | variable {% data => makeVariable(data[0]) %}
+     | variable {% id %}
      | abstraction {% id %}
      | application {% id %}
      | calculator {% id %}
