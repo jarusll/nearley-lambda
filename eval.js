@@ -38,10 +38,6 @@ function evaluate(ast) {
 			return BinOp(operation, leftVal, rightVal)
 		case "application":
 			const fn = evaluate(ast.function)
-			if (ast.argument) {
-				const argument = evaluate(ast.argument)
-				return fn(argument)
-			}
 			if (ast.arguments) {
 				const args = ast.arguments.map(x => evaluate(x))
 				return args.slice(1).reduce((acc, curr) => acc(curr), fn(args[0]))
