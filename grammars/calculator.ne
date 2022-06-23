@@ -1,7 +1,7 @@
 @include "./whitespace.ne"
 @include "./literals.ne"
 
-calculator -> operation
+calculator -> operation {% id %}
 
 variable -> [A-Z]:+ {% data => makeVariable(String(data).replace(/,/g, "")) %}
 
@@ -21,7 +21,7 @@ unary -> negation {% id %}
       | number {% data => makeLiteral("number", data[0]) %}
       | variable {% id %}
 
-negation -> "~" _ number
+negation -> "-" _ number
 	 {% data => -data[2] %}
 grouping -> "(" operation ")"
 	 {% data => data[1] %}

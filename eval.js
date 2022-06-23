@@ -30,9 +30,11 @@ function evaluate(ast) {
 		case "null":
 			return null
 		case "operation":
+			ast.left.block = ast.block
+			ast.right.block = ast.block
 			const leftVal = evaluate(ast.left)
 			const rightVal = evaluate(ast.right)
-			const operation = ast.operator
+			const operation = ast.operation
 			return BinOp(operation, leftVal, rightVal)
 		case "application":
 			const fn = evaluate(ast.function)
@@ -58,6 +60,7 @@ function evaluate(ast) {
 		case "array":
 			return ast.value
 		case "variable":
+			return ast.name
 			if (ast && ast.block && ast.block.includes(ast.name))
 				return ast.name
 			if (env[ast.name])
@@ -69,13 +72,13 @@ function evaluate(ast) {
 			ast.right.block = block
 			const left = evaluate(ast.left)
 			const right = evaluate(ast.right)
-			const op = ast.op
+			const op = ast.operation
 			return left.toString() + op + right.toString()
 		case "abstraction":
-			const arg = ast.arg
-			ast.return.block = [arg]
-			const returnValue = 'return ' + evaluate(ast.return)
-			return Function(arg, returnValue)
+			const argument = ast.argument
+			ast.body.block = [argument]
+			const returnValue = 'return ' + evaluate(ast.body)
+			return Function(argument, returnValue)
 		default:
 			throw new Error(`Unknown AST type: ${ast.type}`)
 	}

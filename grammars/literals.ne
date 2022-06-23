@@ -2,7 +2,7 @@
 @include "./functions.ne"
 
 literal
-    -> boolean {% data => makeLiteral("bool", data[0]) %}
+    -> boolean {% data => makeLiteral("boolean", data[0]) %}
     | number {% data => makeLiteral("number", data[0]) %}
     | string {% data => makeLiteral("string", data[0]) %}
     | atom {% data => makeLiteral("atom", data[0]) %}
