@@ -3,7 +3,7 @@
 
 calculator -> operation {% id %}
 
-variable -> [A-Z]:+ {% data => makeVariable(String(data).replace(/,/g, "")) %}
+variable -> [A-Za-z]:+ {% data => makeVariable(String(data).replace(/,/g, "")) %}
 
 operation -> unary {% id %}
 	| binary {% id %}
