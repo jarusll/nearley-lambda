@@ -1,42 +1,42 @@
 @{%
 
 function makeVariable(name){
-	 return {
-	 	type: "variable",
+	return {
+		type: "variable",
 		name
-	 }
+	}
 }
 
 function makeOperation(op, left, right){
-	 return {
-	 	type: "operation",
+	return {
+		type: "operation",
 		operation: op,
 		left,
 		right
-	 }
+	}
 }
 
 function makeLiteral(type, value){
-	 return {
-	 	type,
+	return {
+		type,
 		value
-	 }
+	}
 }
 
 function makeAbstraction(argument, body){
-	 return {
-	 	type: "abstraction",
+	return {
+		type: "abstraction",
 		argument,
 		body
-	 }
+	}
 }
 
 function makeApplication(fn, arguments){
-	 return {
-	 	type: "application",
+	return {
+		type: "application",
 		function: fn,
 		arguments
-	 }
+	}
 }
 
 %}
