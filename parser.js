@@ -21,7 +21,6 @@ program.command('generate')
     .argument('<output>', 'output file')
     .action((input, output) => {
         try {
-            // read file
             const source = readFile.sync(input, 'utf-8')
             parser.feed(source)
             if (parser.results.length == 0)
