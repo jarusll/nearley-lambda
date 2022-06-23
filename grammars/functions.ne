@@ -31,11 +31,11 @@ function makeAbstraction(argument, body){
 	 }
 }
 
-function makeApplication(fn, argument){
+function makeApplication(fn, arguments){
 	 return {
 	 	type: "application",
 		function: fn,
-		argument
+		arguments
 	 }
 }
 
