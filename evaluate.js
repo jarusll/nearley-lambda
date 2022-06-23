@@ -57,7 +57,6 @@ function evaluate(ast) {
 			return new Error(`Cannot resolve variable: ${ast.name}`)
 		case "abstraction":
 			const argument = ast.argument
-			// const returnValue = 'return ' + evaluate(ast.body)
 			return Function(argument, 'return ' + construct(ast.body))
 		default:
 			throw new Error(`Unknown AST type: ${ast.type}`)
