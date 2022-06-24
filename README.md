@@ -9,6 +9,7 @@ This repo goes hand in hand with the notes named `Making a compiler` on [surajya
 # TODO
   * [x] Break down grammar & bundle
   * [x] Clean up parser
+  * [ ] Documentation
 
 # Roadmap
   * [x] Make an interpreter
