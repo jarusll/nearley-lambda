@@ -8,8 +8,8 @@
     "gen": "nearleyc ./grammars/program.ne -o grammar.js && nearleyc ./grammars/expr.ne -o expr.js"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Suraj Yadav <ysuraj877@gmail.com> (https://surajyadav.xyz/)",
+  "license": "GPL-3.0-or-later",
   "dependencies": {
     "commander": "^9.3.0",
     "nearley": "^2.20.1",
